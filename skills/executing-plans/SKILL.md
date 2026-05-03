@@ -1,70 +1,76 @@
 ---
 name: executing-plans
-description: Use when you have a written implementation plan to execute in a separate session with review checkpoints
+description: Use when executing an approved temporary implementation plan without subagent support
 ---
 
 # Executing Plans
 
 ## Overview
 
-Load plan, review critically, execute all tasks, report when complete.
+Execute an approved temporary implementation plan in the current workspace. Prefer `subagent-driven-development` when subagents are available; use this skill when execution must stay inline.
 
 **Announce at start:** "I'm using the executing-plans skill to implement this plan."
 
-**Note:** Tell your human partner that Superpowers works much better with access to subagents. The quality of its work will be significantly higher if run on a platform with subagent support (such as Claude Code or Codex). If subagents are available, use superpowers:subagent-driven-development instead of this skill.
-
 ## The Process
 
-### Step 1: Load and Review Plan
-1. Read plan file
-2. Review critically - identify any questions or concerns about the plan
-3. If concerns: Raise them with your human partner before starting
-4. If no concerns: Create TodoWrite and proceed
+### Step 1: Review The Temporary Plan
+
+1. Read the approved brief spec and plan from the current conversation, issue, or pull request discussion.
+2. Review critically for missing acceptance criteria, unclear task boundaries, and missing verification.
+3. If concerns exist, raise them with the human partner before starting.
+4. If clear, create TodoWrite and proceed.
 
 ### Step 2: Execute Tasks
 
 For each task:
-1. Mark as in_progress
-2. Follow each step exactly (plan has bite-sized steps)
-3. Run verifications as specified
-4. Mark as completed
 
-### Step 3: Complete Development
+1. Mark it in progress.
+2. Follow each step exactly.
+3. Use `test-driven-development` for behavior changes.
+4. Run the specified verification.
+5. Commit only that task's files.
+6. Mark the task completed.
 
-After all tasks complete and verified:
+### Step 3: Review Checkpoints
+
+After every 1-3 tasks, request code review if the work is complex or risk is accumulating. Fix Critical and Important issues before continuing.
+
+### Step 4: Complete Development
+
+After all tasks are complete and verified:
+
 - Announce: "I'm using the finishing-a-development-branch skill to complete this work."
-- **REQUIRED SUB-SKILL:** Use superpowers:finishing-a-development-branch
-- Follow that skill to verify tests, present options, execute choice
+- **REQUIRED SUB-SKILL:** Use `finishing-a-development-branch`.
+- Follow that skill to create or update the pull request and enter the review loop.
 
 ## When to Stop and Ask for Help
 
-**STOP executing immediately when:**
-- Hit a blocker (missing dependency, test fails, instruction unclear)
-- Plan has critical gaps preventing starting
-- You don't understand an instruction
-- Verification fails repeatedly
+Stop immediately when:
 
-**Ask for clarification rather than guessing.**
+- A blocker prevents progress.
+- The plan has critical gaps.
+- Verification fails repeatedly.
+- Review feedback conflicts with the approved brief spec.
 
-## When to Revisit Earlier Steps
+Ask for clarification rather than guessing.
 
-**Return to Review (Step 1) when:**
-- Partner updates the plan based on your feedback
-- Fundamental approach needs rethinking
+## Red Flags
 
-**Don't force through blockers** - stop and ask.
+**Never:**
+- Execute an unapproved plan.
+- Skip verification for a task.
+- Batch unrelated tasks into one commit.
+- Move to pull request completion with failing tests.
 
-## Remember
-- Review plan critically first
-- Follow plan steps exactly
-- Don't skip verifications
-- Reference skills when plan says to
-- Stop when blocked, don't guess
-- Never start implementation on main/master branch without explicit user consent
+**Always:**
+- Review the plan before implementation.
+- Preserve one commit per task.
+- Keep the current workspace as the working context.
+- Stop on blockers instead of inventing requirements.
 
 ## Integration
 
 **Required workflow skills:**
-- **superpowers:using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
-- **superpowers:writing-plans** - Creates the plan this skill executes
-- **superpowers:finishing-a-development-branch** - Complete development after all tasks
+- **superpowers:writing-plans** - Creates the temporary plan this skill executes.
+- **superpowers:test-driven-development** - Required for behavior changes.
+- **superpowers:finishing-a-development-branch** - Creates or updates the pull request after all tasks.

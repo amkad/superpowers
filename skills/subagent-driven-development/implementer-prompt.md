@@ -10,7 +10,7 @@ Task tool (general-purpose):
 
     ## Task Description
 
-    [FULL TEXT of task from plan - paste it here, don't make subagent read file]
+    [FULL TEXT of task from temporary plan - paste it here, don't make subagent find hidden context]
 
     ## Context
 
@@ -32,9 +32,8 @@ Task tool (general-purpose):
     1. Implement exactly what the task specifies
     2. Write tests (following TDD if task says to)
     3. Verify implementation works
-    4. Commit your work
-    5. Self-review (see below)
-    6. Report back
+    4. Self-review (see below)
+    5. Report back with the task diff ready for review
 
     Work from: [directory]
 
@@ -45,10 +44,10 @@ Task tool (general-purpose):
 
     You reason best about code you can hold in context at once, and your edits are more
     reliable when files are focused. Keep this in mind:
-    - Follow the file structure defined in the plan
+    - Follow the file structure defined in the temporary plan
     - Each file should have one clear responsibility with a well-defined interface
     - If a file you're creating is growing beyond the plan's intent, stop and report
-      it as DONE_WITH_CONCERNS — don't split files on your own without plan guidance
+      it as DONE_WITH_CONCERNS - don't split files on your own without plan guidance
     - If an existing file you're modifying is already large or tangled, work carefully
       and note it as a concern in your report
     - In existing codebases, follow established patterns. Improve code you're touching
@@ -76,7 +75,7 @@ Task tool (general-purpose):
     Review your work with fresh eyes. Ask yourself:
 
     **Completeness:**
-    - Did I fully implement everything in the spec?
+    - Did I fully implement everything in the task and approved brief spec?
     - Did I miss any requirements?
     - Are there edge cases I didn't handle?
 
@@ -96,6 +95,13 @@ Task tool (general-purpose):
     - Are tests comprehensive?
 
     If you find issues during self-review, fix them now before reporting.
+
+    ## Commit Timing
+
+    Do not create the final task commit until the controller tells you that
+    requirements compliance and code quality review have both passed. Review fixes
+    stay in the same task diff. When asked to commit, create exactly one commit for
+    this task.
 
     ## Report Format
 

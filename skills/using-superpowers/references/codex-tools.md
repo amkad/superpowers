@@ -70,31 +70,13 @@ field in `plugin.json`. When `RawPluginManifest` gains an `agents` field, the
 plugin can symlink to `agents/` (mirroring the existing `skills/` symlink) and
 skills can dispatch named agent types directly.
 
-## Environment Detection
+## Pull Request Finishing
 
-Skills that create worktrees or finish branches should detect their
-environment with read-only git commands before proceeding:
+When a skill asks Codex to create, update, review, or merge a pull request,
+use the repository's available tools and instructions. If sandbox or platform
+limits block push, pull request creation, threaded replies, or merge operations,
+state the exact limitation and provide the title, body, reply, or merge request
+details for the human partner to complete manually.
 
-```bash
-GIT_DIR=$(cd "$(git rev-parse --git-dir)" 2>/dev/null && pwd -P)
-GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
-BRANCH=$(git branch --show-current)
-```
-
-- `GIT_DIR != GIT_COMMON` → already in a linked worktree (skip creation)
-- `BRANCH` empty → detached HEAD (cannot branch/push/PR from sandbox)
-
-See `using-git-worktrees` Step 0 and `finishing-a-development-branch`
-Step 1 for how each skill uses these signals.
-
-## Codex App Finishing
-
-When the sandbox blocks branch/push operations (detached HEAD in an
-externally managed worktree), the agent commits all work and informs
-the user to use the App's native controls:
-
-- **"Create branch"** — names the branch, then commit/push/PR via App UI
-- **"Hand off to local"** — transfers work to the user's local checkout
-
-The agent can still run tests, stage files, and output suggested branch
-names, commit messages, and PR descriptions for the user to copy.
+The agent can still run tests, stage files, commit task work, and prepare
+review-ready pull request text in the current workspace.

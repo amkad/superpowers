@@ -138,16 +138,10 @@ cleanup_test_project() {
     fi
 }
 
-# Create a simple plan file for testing
-# Usage: create_test_plan "$project_dir" "$plan_name"
-create_test_plan() {
-    local project_dir="$1"
-    local plan_name="${2:-test-plan}"
-    local plan_file="$project_dir/docs/superpowers/plans/$plan_name.md"
-
-    mkdir -p "$(dirname "$plan_file")"
-
-    cat > "$plan_file" <<'EOF'
+# Print a simple temporary plan for testing
+# Usage: create_test_plan_text
+create_test_plan_text() {
+    cat <<'EOF'
 # Test Implementation Plan
 
 ## Task 1: Create Hello Function
@@ -187,8 +181,6 @@ export function goodbye(name) {
 
 **Verification:** `npm test`
 EOF
-
-    echo "$plan_file"
 }
 
 # Export functions for use in tests
@@ -199,4 +191,4 @@ export -f assert_count
 export -f assert_order
 export -f create_test_project
 export -f cleanup_test_project
-export -f create_test_plan
+export -f create_test_plan_text

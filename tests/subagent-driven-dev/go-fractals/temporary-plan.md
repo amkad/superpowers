@@ -1,10 +1,14 @@
-# Go Fractals CLI - Implementation Plan
+# Go Fractals CLI - Temporary Implementation Plan
 
-Execute this plan using the `superpowers:subagent-driven-development` skill.
+This fixture is inlined into the test prompt as an approved brief spec and temporary plan.
+
+## Approved Brief Spec
+
+Build a command-line tool that generates ASCII art fractals. It supports Sierpinski triangles and Mandelbrot sets, configurable dimensions/depth/iterations, custom output characters, clear help output, clear invalid-input errors, and passing tests.
 
 ## Context
 
-Building a CLI tool that generates ASCII fractals. See `design.md` for full specification.
+Build the CLI in Go with Cobra. Use focused packages for algorithms and CLI wiring.
 
 ## Tasks
 

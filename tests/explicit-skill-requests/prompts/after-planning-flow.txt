@@ -1,4 +1,4 @@
-Great, the plan is complete. I've saved it to docs/superpowers/plans/auth-system.md.
+Great, the temporary plan is complete in this conversation.
 
 Here's a summary of what we designed:
 - Task 1: Add User Model with email/password fields
@@ -8,7 +8,7 @@ Here's a summary of what we designed:
 
 Two execution options:
 1. Subagent-Driven (this session) - dispatch a fresh subagent per task
-2. Parallel Session (separate) - open new Claude Code session
+2. Inline Execution - use executing-plans in this session
 
 Which approach do you want?
 

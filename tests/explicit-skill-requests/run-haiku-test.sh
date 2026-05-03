@@ -12,7 +12,7 @@ OUTPUT_DIR="/tmp/superpowers-tests/${TIMESTAMP}/explicit-skill-requests/haiku"
 mkdir -p "$OUTPUT_DIR"
 
 PROJECT_DIR="$OUTPUT_DIR/project"
-mkdir -p "$PROJECT_DIR/docs/superpowers/plans"
+mkdir -p "$PROJECT_DIR"
 mkdir -p "$PROJECT_DIR/.claude"
 
 echo "=== Haiku Model Test with User CLAUDE.md ==="
@@ -29,23 +29,6 @@ if [ -f "$HOME/.claude/CLAUDE.md" ]; then
 else
     echo "No user CLAUDE.md found, proceeding without"
 fi
-
-# Create a dummy plan file
-cat > "$PROJECT_DIR/docs/superpowers/plans/auth-system.md" << 'EOF'
-# Auth System Implementation Plan
-
-## Task 1: Add User Model
-Create user model with email and password fields.
-
-## Task 2: Add Auth Routes
-Create login and register endpoints.
-
-## Task 3: Add JWT Middleware
-Protect routes with JWT validation.
-
-## Task 4: Write Tests
-Add comprehensive test coverage.
-EOF
 
 echo ""
 

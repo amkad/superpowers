@@ -48,7 +48,7 @@ Common functions for skills testing:
 - `assert_count output pattern count name` - Verify exact count
 - `assert_order output pattern_a pattern_b name` - Verify order
 - `create_test_project` - Create temp test directory
-- `create_test_plan project_dir` - Create sample plan file
+- `create_test_plan_text` - Print sample temporary plan text
 
 ### Test Files
 
@@ -85,10 +85,10 @@ echo "=== All tests passed ==="
 #### test-subagent-driven-development.sh
 Tests skill content and requirements (~2 minutes):
 - Skill loading and accessibility
-- Workflow ordering (spec compliance before code quality)
+- Workflow ordering (requirements compliance before code quality)
 - Self-review requirements documented
 - Plan reading efficiency documented
-- Spec compliance reviewer skepticism documented
+- Requirements compliance reviewer skepticism documented
 - Review loops documented
 - Task context provision documented
 
@@ -103,8 +103,8 @@ Full workflow execution test (~10-30 minutes):
   - Plan read once at start (not per task)
   - Full task text provided in subagent prompts
   - Subagents perform self-review before reporting
-  - Spec compliance review happens before code quality
-  - Spec reviewer reads code independently
+  - Requirements compliance review happens before code quality
+  - Requirements reviewer reads code independently
   - Working implementation is produced
   - Tests pass
   - Proper git commits created

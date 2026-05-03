@@ -4,16 +4,16 @@ Use this template when dispatching a code quality reviewer subagent.
 
 **Purpose:** Verify implementation is well-built (clean, tested, maintainable)
 
-**Only dispatch after spec compliance review passes.**
+**Only dispatch after requirements compliance review passes.**
 
 ```
 Task tool (superpowers:code-reviewer):
   Use template at requesting-code-review/code-reviewer.md
 
   WHAT_WAS_IMPLEMENTED: [from implementer's report]
-  PLAN_OR_REQUIREMENTS: Task N from [plan-file]
+  PLAN_OR_REQUIREMENTS: Task N from the approved temporary plan
   BASE_SHA: [commit before task]
-  HEAD_SHA: [current commit]
+  HEAD_SHA: [working tree diff against BASE_SHA for pre-commit task review]
   DESCRIPTION: [task summary]
 ```
 

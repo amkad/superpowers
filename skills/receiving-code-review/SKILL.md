@@ -80,10 +80,20 @@ IF can't easily verify:
   Say so: "I can't verify this without [X]. Should I [investigate/ask/proceed]?"
 
 IF conflicts with your human partner's prior decisions:
-  Stop and discuss with your human partner first
+   Stop and discuss with your human partner first
 ```
 
 **your human partner's rule:** "External feedback - be skeptical, but check carefully"
+
+### From Pull Request Review
+
+Pull request review is the normal collaboration stage for this workflow.
+
+- Read all comments and questions before making changes.
+- Distinguish required changes from questions, suggestions, and optional follow-ups.
+- Reply in the relevant pull request thread when tooling supports it.
+- Fix valid issues in follow-up commits, not by rewriting unrelated task commits unless explicitly requested.
+- Re-run verification before asking for another review.
 
 ## YAGNI Check for "Professional" Features
 
@@ -203,6 +213,8 @@ You understand 1,2,3,6. Unclear on 4,5.
 ## GitHub Thread Replies
 
 When replying to inline review comments on GitHub, reply in the comment thread (`gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies`), not as a top-level PR comment.
+
+For non-GitHub platforms, use the equivalent threaded reply mechanism when available. If no threaded reply tool is available, state the limitation and provide the exact response for the human partner to post.
 
 ## The Bottom Line
 

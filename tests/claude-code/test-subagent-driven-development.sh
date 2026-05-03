@@ -31,9 +31,9 @@ echo ""
 # Test 2: Verify skill describes correct workflow order
 echo "Test 2: Workflow ordering..."
 
-output=$(run_claude "In the subagent-driven-development skill, what comes first: spec compliance review or code quality review? Be specific about the order." 30)
+output=$(run_claude "In the subagent-driven-development skill, what comes first: requirements compliance review or code quality review? Be specific about the order." 30)
 
-if assert_order "$output" "spec.*compliance" "code.*quality" "Spec compliance before code quality"; then
+if assert_order "$output" "requirements.*compliance" "code.*quality" "Requirements compliance before code quality"; then
     : # pass
 else
     exit 1
@@ -63,7 +63,7 @@ echo ""
 # Test 4: Verify plan is read once
 echo "Test 4: Plan reading efficiency..."
 
-output=$(run_claude "In subagent-driven-development, how many times should the controller read the plan file? When does this happen?" 30)
+output=$(run_claude "In subagent-driven-development, how many times should the controller extract the temporary plan? When does this happen?" 30)
 
 if assert_contains "$output" "once\|one time\|single" "Read plan once"; then
     : # pass
@@ -79,10 +79,10 @@ fi
 
 echo ""
 
-# Test 5: Verify spec compliance reviewer is skeptical
-echo "Test 5: Spec compliance reviewer mindset..."
+# Test 5: Verify requirements compliance reviewer is skeptical
+echo "Test 5: Requirements compliance reviewer mindset..."
 
-output=$(run_claude "What is the spec compliance reviewer's attitude toward the implementer's report in subagent-driven-development?" 30)
+output=$(run_claude "What is the requirements compliance reviewer's attitude toward the implementer's report in subagent-driven-development?" 30)
 
 if assert_contains "$output" "not trust\|don't trust\|skeptical\|verify.*independently\|suspiciously" "Reviewer is skeptical"; then
     : # pass
@@ -136,12 +136,18 @@ fi
 
 echo ""
 
-# Test 8: Verify worktree requirement
-echo "Test 8: Worktree requirement..."
+# Test 8: Verify current workspace prerequisite
+echo "Test 8: Current workspace prerequisite..."
 
-output=$(run_claude "What workflow skills are required before using subagent-driven-development? List any prerequisites or required skills." 30)
+output=$(run_claude "What workflow assumptions apply before using subagent-driven-development? List prerequisites or required skills." 30)
 
-if assert_contains "$output" "using-git-worktrees\|worktree" "Mentions worktree requirement"; then
+if assert_contains "$output" "writing-plans\|temporary plan\|approved.*plan\|brief spec\|current workspace" "Mentions temporary plan/current workspace prerequisites"; then
+    : # pass
+else
+    exit 1
+fi
+
+if assert_not_contains "$output" "using-git-worktrees\|git worktree" "Does not require worktree setup"; then
     : # pass
 else
     exit 1
@@ -149,12 +155,12 @@ fi
 
 echo ""
 
-# Test 9: Verify main branch warning
-echo "Test 9: Main branch red flag..."
+# Test 9: Verify approval warning
+echo "Test 9: Approval red flag..."
 
-output=$(run_claude "In subagent-driven-development, is it okay to start implementation directly on the main branch?" 30)
+output=$(run_claude "In subagent-driven-development, is it okay to start implementation without an approved brief spec or temporary plan?" 30)
 
-if assert_contains "$output" "worktree\|feature.*branch\|not.*main\|never.*main\|avoid.*main\|don't.*main\|consent\|permission" "Warns against main branch"; then
+if assert_contains "$output" "no\|not okay\|approved\|brief spec\|temporary plan\|before starting" "Warns against unapproved execution"; then
     : # pass
 else
     exit 1

@@ -58,9 +58,12 @@ echo ">>> Scaffolding project..."
 "$TEST_DIR/scaffold.sh" "$OUTPUT_DIR/project"
 echo ""
 
-# Prepare the prompt
-PLAN_PATH="$OUTPUT_DIR/project/plan.md"
-PROMPT="Execute this plan using superpowers:subagent-driven-development. The plan is at: $PLAN_PATH"
+# Prepare the prompt. The fixture stays in the test harness; the agent receives
+# the approved brief spec and temporary plan inline, matching the live workflow.
+TEMP_PLAN=$(< "$TEST_DIR/temporary-plan.md")
+PROMPT="Execute this approved brief spec and temporary plan using superpowers:subagent-driven-development in the current workspace.
+
+$TEMP_PLAN"
 
 # Run Claude with JSON output for token tracking
 LOG_FILE="$OUTPUT_DIR/claude-output.json"

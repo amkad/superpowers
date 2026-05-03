@@ -1,15 +1,15 @@
 ---
 name: finishing-a-development-branch
-description: Use when implementation is complete, all tests pass, and you need to decide how to integrate the work - guides completion of development work by presenting structured options for merge, PR, or cleanup
+description: Use when implementation is complete, verification passes, and pull request review or merge work remains
 ---
 
-# Finishing a Development Branch
+# Finishing Development Through Pull Requests
 
 ## Overview
 
-Guide completion of development work by presenting clear options and handling chosen workflow.
+Complete development by creating or updating a pull request, moving review discussion into that pull request, iterating on feedback, merging after approval, and reporting final status.
 
-**Core principle:** Verify tests → Present options → Execute choice → Clean up.
+**Core principle:** Verify first, collaborate in the pull request, merge only after approval.
 
 **Announce at start:** "I'm using the finishing-a-development-branch skill to complete this work."
 
@@ -17,184 +17,120 @@ Guide completion of development work by presenting clear options and handling ch
 
 ### Step 1: Verify Tests
 
-**Before presenting options, verify tests pass:**
+Run the project's relevant test and build commands before creating, updating, or merging a pull request.
 
-```bash
-# Run project's test suite
-npm test / cargo test / pytest / go test ./...
-```
+If tests fail:
 
-**If tests fail:**
-```
-Tests failing (<N> failures). Must fix before completing:
+```text
+Tests failing (<N> failures). Must fix before PR completion:
 
 [Show failures]
 
-Cannot proceed with merge/PR until tests pass.
+Cannot proceed until verification passes.
 ```
 
-Stop. Don't proceed to Step 2.
+Stop and fix failures before continuing.
 
-**If tests pass:** Continue to Step 2.
+### Step 2: Gather PR Context
 
-### Step 2: Determine Base Branch
+Check repository instructions for the required issue and pull request workflow. Stay platform-neutral:
 
-```bash
-# Try common base branches
-git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null
-```
+- Use the repository's preferred CLI/API when available.
+- If no automation is available, prepare the title/body and tell the human what remains manual.
+- Include the issue reference when one exists.
+- Use the current workspace and current branch context.
 
-Or ask: "This branch split from main - is that correct?"
+### Step 3: Create Or Update The Pull Request
 
-### Step 3: Present Options
+The pull request body should include:
 
-Present exactly these 4 options:
+- Problem or issue summary.
+- Approved brief spec.
+- Task commits or implementation summary.
+- Verification evidence.
+- Open questions or follow-up risks, if any.
 
-```
-Implementation complete. What would you like to do?
+If a pull request already exists, update it instead of creating a duplicate.
 
-1. Merge back to <base-branch> locally
-2. Push and create a Pull Request
-3. Keep the branch as-is (I'll handle it later)
-4. Discard this work
+### Step 4: Wait For Review
 
-Which option?
-```
+After the pull request is ready:
 
-**Don't add explanation** - keep options concise.
+- Tell the human partner the pull request is ready for review.
+- Do not merge without approval.
+- If review tooling is available, check for review state and comments.
+- If no review has arrived, stop and wait rather than inventing approval.
 
-### Step 4: Execute Choice
+### Step 5: Iterate On Review
 
-#### Option 1: Merge Locally
+When review comments or questions arrive:
 
-```bash
-# Switch to base branch
-git checkout <base-branch>
+- **REQUIRED SUB-SKILL:** Use `receiving-code-review`.
+- Read all comments before acting.
+- Fix valid issues in follow-up commits.
+- Answer questions in the relevant pull request threads when tooling supports it.
+- Push or otherwise update the pull request.
+- Re-run verification and repeat until approved.
 
-# Pull latest
-git pull
+### Step 6: Merge After Approval
 
-# Merge feature branch
-git merge <feature-branch>
+After approval and passing verification:
 
-# Verify tests on merged result
-<test command>
-
-# If tests pass
-git branch -d <feature-branch>
-```
-
-Then: Cleanup worktree (Step 5)
-
-#### Option 2: Push and Create PR
-
-```bash
-# Push branch
-git push -u origin <feature-branch>
-
-# Create PR
-gh pr create --title "<title>" --body "$(cat <<'EOF'
-## Summary
-<2-3 bullets of what changed>
-
-## Test Plan
-- [ ] <verification steps>
-EOF
-)"
-```
-
-Then: Cleanup worktree (Step 5)
-
-#### Option 3: Keep As-Is
-
-Report: "Keeping branch <name>. Worktree preserved at <path>."
-
-**Don't cleanup worktree.**
-
-#### Option 4: Discard
-
-**Confirm first:**
-```
-This will permanently delete:
-- Branch <name>
-- All commits: <commit-list>
-- Worktree at <path>
-
-Type 'discard' to confirm.
-```
-
-Wait for exact confirmation.
-
-If confirmed:
-```bash
-git checkout <base-branch>
-git branch -D <feature-branch>
-```
-
-Then: Cleanup worktree (Step 5)
-
-### Step 5: Cleanup Worktree
-
-**For Options 1, 2, 4:**
-
-Check if in worktree:
-```bash
-git worktree list | grep $(git branch --show-current)
-```
-
-If yes:
-```bash
-git worktree remove <worktree-path>
-```
-
-**For Option 3:** Keep worktree.
+- Use the repository's preferred merge method.
+- If merge automation is unavailable or blocked, ask the human partner to merge and report the exact blocker.
+- Update or close the issue when the repository workflow expects it.
+- Report the merged pull request, final verification, and any remaining follow-up notes.
 
 ## Quick Reference
 
-| Option | Merge | Push | Keep Worktree | Cleanup Branch |
-|--------|-------|------|---------------|----------------|
-| 1. Merge locally | ✓ | - | - | ✓ |
-| 2. Create PR | - | ✓ | ✓ | - |
-| 3. Keep as-is | - | - | ✓ | - |
-| 4. Discard | - | - | - | ✓ (force) |
+| State | Action |
+|-------|--------|
+| Verification failing | Fix before PR completion |
+| No pull request exists | Create one using repo instructions |
+| Pull request exists | Update it, do not duplicate |
+| Review pending | Wait, do not merge |
+| Comments received | Use `receiving-code-review`, fix or answer |
+| Approved | Verify again, then merge |
 
 ## Common Mistakes
 
-**Skipping test verification**
-- **Problem:** Merge broken code, create failing PR
-- **Fix:** Always verify tests before offering options
+**Skipping verification**
+- **Problem:** Broken pull request or broken merge.
+- **Fix:** Verify before PR creation/update and before merge.
 
-**Open-ended questions**
-- **Problem:** "What should I do next?" → ambiguous
-- **Fix:** Present exactly 4 structured options
+**Treating PR creation as completion**
+- **Problem:** Human partner still needs review, questions answered, and merge handling.
+- **Fix:** Stay in the PR loop until approved and merged.
 
-**Automatic worktree cleanup**
-- **Problem:** Remove worktree when might need it (Option 2, 3)
-- **Fix:** Only cleanup for Options 1 and 4
+**Top-level replies to inline comments**
+- **Problem:** Review context gets lost.
+- **Fix:** Reply in the relevant thread when tooling supports it.
 
-**No confirmation for discard**
-- **Problem:** Accidentally delete work
-- **Fix:** Require typed "discard" confirmation
+**Merging without approval**
+- **Problem:** Bypasses the main human collaboration stage.
+- **Fix:** Wait for explicit approval.
 
 ## Red Flags
 
 **Never:**
-- Proceed with failing tests
-- Merge without verifying tests on result
-- Delete work without confirmation
-- Force-push without explicit request
+- Proceed with failing verification.
+- Create a duplicate pull request for the same branch/work.
+- Merge without approval.
+- Force-push unless explicitly requested.
+- Ignore review comments or questions.
 
 **Always:**
-- Verify tests before offering options
-- Present exactly 4 options
-- Get typed confirmation for Option 4
-- Clean up worktree for Options 1 & 4 only
+- Use repository instructions for issue and pull request tooling.
+- Keep the pull request body specific and evidence-backed.
+- Answer questions in the pull request when possible.
+- Re-run verification after review fixes.
 
 ## Integration
 
 **Called by:**
-- **subagent-driven-development** (Step 7) - After all tasks complete
-- **executing-plans** (Step 5) - After all batches complete
+- **subagent-driven-development** - After all task commits and reviews complete.
+- **executing-plans** - After inline task execution completes.
 
 **Pairs with:**
-- **using-git-worktrees** - Cleans up worktree created by that skill
+- **receiving-code-review** - Handles pull request comments and questions.
+- **verification-before-completion** - Confirms evidence before success claims, commits, or PR updates.

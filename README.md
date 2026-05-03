@@ -2,15 +2,17 @@
 
 Superpowers is a complete software development methodology for your coding agents, built on top of a set of composable skills and some initial instructions that make sure your agent uses them.
 
+This derived workflow is maintained separately from upstream Superpowers. It is optimized around issues, pull requests, and review-driven iteration rather than repository design artifacts.
+
 ## How it works
 
 It starts from the moment you fire up your coding agent. As soon as it sees that you're building something, it *doesn't* just jump into trying to write code. Instead, it steps back and asks you what you're really trying to do. 
 
-Once it's teased a spec out of the conversation, it shows it to you in chunks short enough to actually read and digest. 
+Once it has teased a brief spec out of the conversation, it shows it to you in chunks short enough to read and discuss.
 
-After you've signed off on the design, your agent puts together an implementation plan that's clear enough for an enthusiastic junior engineer with poor taste, no judgement, no project context, and an aversion to testing to follow. It emphasizes true red/green TDD, YAGNI (You Aren't Gonna Need It), and DRY. 
+After you've signed off on the brief spec, your agent puts together a temporary implementation plan that's clear enough for an enthusiastic junior engineer with poor taste, no judgement, no project context, and an aversion to testing to follow. It emphasizes true red/green TDD, YAGNI (You Aren't Gonna Need It), DRY, and one commit per task.
 
-Next up, once you say "go", it launches a *subagent-driven-development* process, having agents work through each engineering task, inspecting and reviewing their work, and continuing forward. It's not uncommon for Claude to be able to work autonomously for a couple hours at a time without deviating from the plan you put together.
+Next up, once you say "go", it launches a *subagent-driven-development* process in the current workspace, having agents implement each engineering task, inspect and review it, then commit once review passes. When implementation is complete, the pull request becomes the main collaboration surface for review, questions, fixes, approval, merge, and finalization.
 
 There's a bunch more to it, but that's the core of the system. And because the skills trigger automatically, you don't need to do anything special. Your coding agent just has Superpowers.
 
@@ -118,19 +120,19 @@ gemini extensions update superpowers
 
 ## The Basic Workflow
 
-1. **brainstorming** - Activates before writing code. Refines rough ideas through questions, explores alternatives, presents design in sections for validation. Saves design document.
+1. **brainstorming** - Activates before writing code. Refines an issue or human prompt through questions, explores alternatives, and presents a brief spec for validation.
 
-2. **using-git-worktrees** - Activates after design approval. Creates isolated workspace on new branch, runs project setup, verifies clean test baseline.
+2. **writing-plans** - Activates with an approved brief spec. Breaks work into temporary, bite-sized tasks. Every task has exact file paths, verification steps, and its own commit boundary.
 
-3. **writing-plans** - Activates with approved design. Breaks work into bite-sized tasks (2-5 minutes each). Every task has exact file paths, complete code, verification steps.
+3. **subagent-driven-development** or **executing-plans** - Activates with the temporary plan. Dispatches a fresh subagent per task with two-stage review, or executes inline when subagents are unavailable.
 
-4. **subagent-driven-development** or **executing-plans** - Activates with plan. Dispatches fresh subagent per task with two-stage review (spec compliance, then code quality), or executes in batches with human checkpoints.
+4. **test-driven-development** - Activates during implementation. Enforces RED-GREEN-REFACTOR: write failing test, watch it fail, write minimal code, watch it pass, commit.
 
-5. **test-driven-development** - Activates during implementation. Enforces RED-GREEN-REFACTOR: write failing test, watch it fail, write minimal code, watch it pass, commit. Deletes code written before tests.
+5. **requesting-code-review** - Activates between tasks and before pull request completion. Reviews against requirements, reports issues by severity, and blocks progress on Critical or Important issues.
 
-6. **requesting-code-review** - Activates between tasks. Reviews against plan, reports issues by severity. Critical issues block progress.
+6. **finishing-a-development-branch** - Activates when tasks complete. Verifies tests, creates or updates a pull request, waits for review, iterates on feedback, merges after approval, and finalizes the issue or task.
 
-7. **finishing-a-development-branch** - Activates when tasks complete. Verifies tests, presents options (merge/PR/keep/discard), cleans up worktree.
+7. **receiving-code-review** - Activates when pull request comments or questions arrive. Verifies feedback, fixes valid issues, answers questions, and requests another review.
 
 **The agent checks for relevant skills before any task.** Mandatory workflows, not suggestions.
 
@@ -147,14 +149,13 @@ gemini extensions update superpowers
 
 **Collaboration** 
 - **brainstorming** - Socratic design refinement
-- **writing-plans** - Detailed implementation plans
+- **writing-plans** - Temporary implementation plans
 - **executing-plans** - Batch execution with checkpoints
 - **dispatching-parallel-agents** - Concurrent subagent workflows
 - **requesting-code-review** - Pre-review checklist
 - **receiving-code-review** - Responding to feedback
-- **using-git-worktrees** - Parallel development branches
-- **finishing-a-development-branch** - Merge/PR decision workflow
-- **subagent-driven-development** - Fast iteration with two-stage review (spec compliance, then code quality)
+- **finishing-a-development-branch** - Pull request review and merge workflow
+- **subagent-driven-development** - Fast iteration with two-stage review and one commit per task
 
 **Meta**
 - **writing-skills** - Create new skills following best practices (includes testing methodology)
@@ -171,13 +172,13 @@ Read [the original release announcement](https://blog.fsck.com/2025/10/09/superp
 
 ## Contributing
 
-The general contribution process for Superpowers is below. Keep in mind that we don't generally accept contributions of new skills and that any updates to skills must work across all of the coding agents we support.
+This repository is a derived project and fork-specific workflow changes are not intended for upstream Superpowers. For changes to this derived project:
 
 1. Fork the repository
 2. Switch to the 'dev' branch
 3. Create a branch for your work
 4. Follow the `writing-skills` skill for creating and testing new and modified skills
-5. Submit a PR, being sure to fill in the pull request template.
+5. Submit or update a PR, use the PR as the review surface, and merge only after approval.
 
 See `skills/writing-skills/SKILL.md` for the complete guide.
 

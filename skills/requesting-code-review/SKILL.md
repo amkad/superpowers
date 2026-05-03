@@ -23,7 +23,17 @@ Dispatch superpowers:code-reviewer subagent to catch issues before they cascade.
 
 ## How to Request
 
-**1. Get git SHAs:**
+**1. Identify the review range:**
+
+For pre-commit task review, review the working tree diff against the pre-task commit:
+
+```bash
+BASE_SHA=$(git rev-parse HEAD)
+git diff --stat
+```
+
+For committed review, get git SHAs:
+
 ```bash
 BASE_SHA=$(git rev-parse HEAD~1)  # or origin/main
 HEAD_SHA=$(git rev-parse HEAD)
@@ -37,7 +47,7 @@ Use Task tool with superpowers:code-reviewer type, fill template at `code-review
 - `{WHAT_WAS_IMPLEMENTED}` - What you just built
 - `{PLAN_OR_REQUIREMENTS}` - What it should do
 - `{BASE_SHA}` - Starting commit
-- `{HEAD_SHA}` - Ending commit
+- `{HEAD_SHA}` - Ending commit, or "working tree diff against BASE_SHA" for pre-commit review
 - `{DESCRIPTION}` - Brief summary
 
 **3. Act on feedback:**
@@ -58,7 +68,7 @@ HEAD_SHA=$(git rev-parse HEAD)
 
 [Dispatch superpowers:code-reviewer subagent]
   WHAT_WAS_IMPLEMENTED: Verification and repair functions for conversation index
-  PLAN_OR_REQUIREMENTS: Task 2 from docs/superpowers/plans/deployment-plan.md
+  PLAN_OR_REQUIREMENTS: Task 2 from the approved temporary plan
   BASE_SHA: a7981ec
   HEAD_SHA: 3df7661
   DESCRIPTION: Added verifyIndex() and repairIndex() with 4 issue types

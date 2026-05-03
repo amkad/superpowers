@@ -14,10 +14,6 @@ cd "$TARGET_DIR"
 # Initialize git repo
 git init
 
-# Copy design and plan
-cp "$SCRIPT_DIR/design.md" .
-cp "$SCRIPT_DIR/plan.md" .
-
 # Create .claude settings to allow reads/writes in this directory
 mkdir -p .claude
 cat > .claude/settings.local.json << 'SETTINGS'
@@ -38,9 +34,9 @@ SETTINGS
 
 # Create initial commit
 git add .
-git commit -m "Initial project setup with design and plan"
+git commit -m "Initial project setup"
 
 echo "Scaffolded Svelte Todo project at: $TARGET_DIR"
 echo ""
 echo "To run the test:"
-echo "  claude -p \"Execute this plan using superpowers:subagent-driven-development. Plan: $TARGET_DIR/plan.md\" --plugin-dir /path/to/superpowers"
+echo "  tests/subagent-driven-dev/run-test.sh svelte-todo --plugin-dir /path/to/superpowers"

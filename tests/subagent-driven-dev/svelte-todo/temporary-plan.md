@@ -1,10 +1,14 @@
-# Svelte Todo List - Implementation Plan
+# Svelte Todo List - Temporary Implementation Plan
 
-Execute this plan using the `superpowers:subagent-driven-development` skill.
+This fixture is inlined into the test prompt as an approved brief spec and temporary plan.
+
+## Approved Brief Spec
+
+Build a Svelte todo app that can add, toggle, delete, filter, clear completed, persist todos to localStorage, show remaining count, display an empty state, and pass tests.
 
 ## Context
 
-Building a todo list app with Svelte. See `design.md` for full specification.
+Use Svelte with Vite and TypeScript. Keep UI components and store/storage responsibilities separate.
 
 ## Tasks
 

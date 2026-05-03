@@ -14,9 +14,10 @@ echo "This test executes a real plan using the skill and verifies:"
 echo "  1. Plan is read once (not per task)"
 echo "  2. Full task text provided to subagents"
 echo "  3. Subagents perform self-review"
-echo "  4. Spec compliance review before code quality"
+echo "  4. Requirements compliance review before code quality"
 echo "  5. Review loops when issues found"
-echo "  6. Spec reviewer reads code independently"
+echo "  6. Requirements reviewer reads code independently"
+echo "  7. Task commit happens after review approval"
 echo ""
 echo "WARNING: This test may take 10-30 minutes to complete."
 echo ""
@@ -42,10 +43,27 @@ cat > package.json <<'EOF'
 }
 EOF
 
-mkdir -p src test docs/superpowers/plans
+mkdir -p src test
 
-# Create a simple implementation plan
-cat > docs/superpowers/plans/implementation-plan.md <<'EOF'
+# Initialize git repo
+git init --quiet
+git config user.email "test@test.com"
+git config user.name "Test User"
+git add .
+git commit -m "Initial commit" --quiet
+
+echo ""
+echo "Project setup complete. Starting execution..."
+echo ""
+
+# Run Claude with subagent-driven-development
+# Capture full output to analyze
+OUTPUT_FILE="$TEST_PROJECT/claude-output.txt"
+
+# Create prompt file
+cat > "$TEST_PROJECT/prompt.txt" <<'EOF'
+I want you to execute this approved temporary implementation plan using the subagent-driven-development skill.
+
 # Test Implementation Plan
 
 This is a minimal plan to test the subagent-driven-development workflow.
@@ -102,32 +120,12 @@ export function multiply(a, b) {
 - `multiply(-2, 3)` returns `-6`
 
 **Verification:** `npm test`
-EOF
-
-# Initialize git repo
-git init --quiet
-git config user.email "test@test.com"
-git config user.name "Test User"
-git add .
-git commit -m "Initial commit" --quiet
-
-echo ""
-echo "Project setup complete. Starting execution..."
-echo ""
-
-# Run Claude with subagent-driven-development
-# Capture full output to analyze
-OUTPUT_FILE="$TEST_PROJECT/claude-output.txt"
-
-# Create prompt file
-cat > "$TEST_PROJECT/prompt.txt" <<'EOF'
-I want you to execute the implementation plan at docs/superpowers/plans/implementation-plan.md using the subagent-driven-development skill.
 
 IMPORTANT: Follow the skill exactly. I will be verifying that you:
-1. Read the plan once at the beginning
-2. Provide full task text to subagents (don't make them read files)
+1. Extract the temporary plan once at the beginning
+2. Provide full task text to subagents (don't make them find hidden context)
 3. Ensure subagents do self-review before reporting
-4. Run spec compliance review before code quality review
+4. Run requirements compliance review before code quality review
 5. Use review loops when issues are found
 
 Begin now. Execute the plan.
@@ -136,13 +134,16 @@ EOF
 # Note: We use a longer timeout since this is integration testing
 # Use --allowed-tools to enable tool usage in headless mode
 # IMPORTANT: Run from superpowers directory so local dev skills are available
-PROMPT="Change to directory $TEST_PROJECT and then execute the implementation plan at docs/superpowers/plans/implementation-plan.md using the subagent-driven-development skill.
+TEMP_PLAN=$(cat "$TEST_PROJECT/prompt.txt")
+PROMPT="Change to directory $TEST_PROJECT and then execute the approved temporary implementation plan below using the subagent-driven-development skill.
+
+$TEMP_PLAN
 
 IMPORTANT: Follow the skill exactly. I will be verifying that you:
-1. Read the plan once at the beginning
-2. Provide full task text to subagents (don't make them read files)
+1. Extract the temporary plan once at the beginning
+2. Provide full task text to subagents (don't make them find hidden context)
 3. Ensure subagents do self-review before reporting
-4. Run spec compliance review before code quality review
+4. Run requirements compliance review before code quality review
 5. Use review loops when issues are found
 
 Begin now. Execute the plan."
@@ -216,6 +217,16 @@ else
 fi
 echo ""
 
+# Test 4: Review-before-commit instruction is present
+echo "Test 4: Review before task commit..."
+if grep -Eiq "review before task commit|commit.*after.*review|do not create the final task commit until" "$SESSION_FILE"; then
+    echo "  [PASS] Review-before-commit ordering documented in session"
+else
+    echo "  [FAIL] Review-before-commit ordering not found in session"
+    FAILED=$((FAILED + 1))
+fi
+echo ""
+
 # Test 6: Implementation actually works
 echo "Test 6: Implementation verification..."
 if [ -f "$TEST_PROJECT/src/math.js" ]; then
@@ -267,10 +278,10 @@ else
 fi
 echo ""
 
-# Test 8: Check for extra features (spec compliance should catch)
-echo "Test 8: No extra features added (spec compliance)..."
+# Test 8: Check for extra features (requirements compliance should catch)
+echo "Test 8: No extra features added (requirements compliance)..."
 if grep -q "export function divide\|export function power\|export function subtract" "$TEST_PROJECT/src/math.js" 2>/dev/null; then
-    echo "  [WARN] Extra features found (spec review should have caught this)"
+    echo "  [WARN] Extra features found (requirements review should have caught this)"
     # Not failing on this as it tests reviewer effectiveness
 else
     echo "  [PASS] No extra features added"
@@ -296,11 +307,12 @@ if [ $FAILED -eq 0 ]; then
     echo "All verification tests passed!"
     echo ""
     echo "The subagent-driven-development skill correctly:"
-    echo "  ✓ Reads plan once at start"
+    echo "  ✓ Extracts temporary plan once at start"
     echo "  ✓ Provides full task text to subagents"
     echo "  ✓ Enforces self-review"
-    echo "  ✓ Runs spec compliance before code quality"
-    echo "  ✓ Spec reviewer verifies independently"
+    echo "  ✓ Runs requirements compliance before code quality"
+    echo "  ✓ Requirements reviewer verifies independently"
+    echo "  ✓ Commits tasks after review approval"
     echo "  ✓ Produces working implementation"
     exit 0
 else

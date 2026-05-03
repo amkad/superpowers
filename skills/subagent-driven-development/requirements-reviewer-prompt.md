@@ -1,14 +1,14 @@
-# Spec Compliance Reviewer Prompt Template
+# Requirements Compliance Reviewer Prompt Template
 
-Use this template when dispatching a spec compliance reviewer subagent.
+Use this template when dispatching a requirements compliance reviewer subagent.
 
 **Purpose:** Verify implementer built what was requested (nothing more, nothing less)
 
 ```
 Task tool (general-purpose):
-  description: "Review spec compliance for Task N"
+  description: "Review requirements compliance for Task N"
   prompt: |
-    You are reviewing whether an implementation matches its specification.
+    You are reviewing whether an implementation matches the approved brief spec and task requirements.
 
     ## What Was Requested
 
@@ -46,7 +46,7 @@ Task tool (general-purpose):
     **Extra/unneeded work:**
     - Did they build things that weren't requested?
     - Did they over-engineer or add unnecessary features?
-    - Did they add "nice to haves" that weren't in spec?
+    - Did they add "nice to haves" that weren't requested?
 
     **Misunderstandings:**
     - Did they interpret requirements differently than intended?
@@ -56,6 +56,6 @@ Task tool (general-purpose):
     **Verify by reading code, not by trusting report.**
 
     Report:
-    - ✅ Spec compliant (if everything matches after code inspection)
-    - ❌ Issues found: [list specifically what's missing or extra, with file:line references]
+    - Requirements compliant (if everything matches after code inspection)
+    - Issues found: [list specifically what's missing or extra, with file:line references]
 ```
